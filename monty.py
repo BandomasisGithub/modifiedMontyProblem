@@ -15,7 +15,8 @@ def monty_logic(door_amount):
 
 
     #DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('winningDoor', 1), ('chosenWinningDoorByTheUser', 2), ('chosenDoorByTheUser', 3), ('removedDoor', 4)])
-    DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('winningDoor', 1), ('chosenWinningDoorByTheUser', 2), ('chosenDoorByTheUser', 3), ('removedDoor', 4)])
+    DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('unchosenWinningDoor', 1), ('currentChosenWinningDoorByTheUser', 2), ('chosenWinningDoorByTheUser', 3), ('chosenDoorByTheUser', 4),
+                                     ('currentChosenDoorByTheUser', 5), ('removedUnchosenDoor', 6), ('removedChosenDoorr', 7)])
 
     
     door_winning_instances = np.array([np.zeros(door_amount)])
@@ -42,18 +43,22 @@ def monty_logic(door_amount):
         
             doors_to_remove_status[winning_door_index] = DoorStatus.winningDoor.value
             doors_to_remove_status[user_choise_index] = DoorStatus.chosenDoorByTheUser.value
-            doors[winning_door_index] = DoorStatus.winningDoor.value
-            doors[user_choise_index] = DoorStatus.chosenDoorByTheUser.value
+            doors[winning_door_index] = DoorStatus.unchosenWinningDoor.value
+            doors[user_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
         else:
-            doors_to_remove_status[winning_door_index] = DoorStatus.chosenWinningDoorByTheUser.value
-            doors[winning_door_index] = DoorStatus.chosenWinningDoorByTheUser.value
-
-
-        winning_index = np.where(np.logical_or(doors == 1, doors == 2))
+            doors_to_remove_status[winning_door_index] = DoorStatus.currentWinningDoorByTheUser.value
+            doors[winning_door_index] = DoorStatus.currentWinningDoorByTheUser.value
+             
+        #This instance doenst need because there is no chosenWinningDoorByTheUser value 
+        #but if i will extract function i should look at DoorStatus.chosenWinningDoorByTheUser.value 
+        
+        winning_index = np.where(np.logical_or(doors ==  DoorStatus.unchosenWinningDoor.value, doors == DoorStatus.currentChosenWinningDoorByTheUser.value))
         staying_win_index = 0
+
+        
         # I have to print and show percentege of unhosen chosen door percentege
-        #this is full doors check absolutly without no removing doors and changing them
-        if np.where(doors == DoorStatus.chosenWinningDoorByTheUser.value)[0].size != 0:
+        #this is full door check without removing no doors or changing them
+        if np.where(doors == DoorStatus.currentChosenWinningDoorByTheUserr.value)[0].size != 0:
             amount_of_winning_by_staying[staying_win_index] += 1
         
         staying_win_index += 1
@@ -94,7 +99,7 @@ def monty_logic(door_amount):
 
             #i should check if this work in the sence that if uchosen_doors_indices is empty does it return False or returns True because i check an empty tuple
             if unchosen_doors_indices:
-            
+                #should also take unchosen wining instance because now i only take unchosen also should take unchosenWining
                 user_new_door_choise = np.random.choice(unchosen_doors_indices)
 
             #Check logic percentege somehow
@@ -103,7 +108,7 @@ def monty_logic(door_amount):
             if doors_to_remove_status[user_new_door_choise] == DoorStatus.winningDoor.value:
                 doors_to_remove_status[user_new_door_choise] = DoorStatus.chosenWinningDoorByTheUser.value
 
-                #Check logic percentege somhow after switch
+                #Check logic percentege somehow after switch
 
                    
 
