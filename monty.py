@@ -14,7 +14,9 @@ def main():
 def monty_logic(door_amount):
 
 
+    #DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('winningDoor', 1), ('chosenWinningDoorByTheUser', 2), ('chosenDoorByTheUser', 3), ('removedDoor', 4)])
     DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('winningDoor', 1), ('chosenWinningDoorByTheUser', 2), ('chosenDoorByTheUser', 3), ('removedDoor', 4)])
+
     
     door_winning_instances = np.array([np.zeros(door_amount)])
     print(door_winning_instances)
@@ -72,14 +74,28 @@ def monty_logic(door_amount):
         #function here probabl
 
         
-        
+        #maybe i dont need len() and just plane unchosen_doors_indices is enough
         if len(unchosen_doors_indices) > 0:
 
             door_to_remove_index = np.random.choice(unchosen_doors_indices)
             doors_to_remove_status[user_new_door_choise] = DoorStatus.removedDoor.value
 
             unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
-            user_new_door_choise = np.random.choice(unchosen_doors_indices)
+
+            #Check with removed door without the switch
+            
+
+
+
+            #Check the with the switched door
+            # line below chooses random door from the unchosen door list
+            #I should check if it is not empty first
+
+
+            #i should check if this work in the sence that if uchosen_doors_indices is empty does it return False or returns True because i check an empty tuple
+            if unchosen_doors_indices:
+            
+                user_new_door_choise = np.random.choice(unchosen_doors_indices)
 
             #Check logic percentege somehow
 
@@ -89,7 +105,7 @@ def monty_logic(door_amount):
 
                 #Check logic percentege somhow after switch
 
-                    
+                   
 
 
         #CHECK WITHOUT SWITCHING
