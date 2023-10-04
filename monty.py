@@ -1,4 +1,4 @@
-import pandas as pd
+ import pandas as pd
 import numpy as np
 import random
 from enum import Enum
@@ -84,14 +84,17 @@ def monty_logic(door_amount):
 
         #maybe i dont need len() and just plane unchosen_doors_indices is enough
         #maybe i have to have len()
-
+        
+        
         if unchosen_doors_indices:
-            
+            subsequent_door_choise_step = doors[doors_status_index].copy()
             unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)  
             #and unchosen win
+            doors_status_index += 1
+            doors = doors.append(subsequent_door_choise_step)
             door_to_remove_index = np.random.choice(unchosen_doors_indices)
             doors[doors_status_index][door_to_remove_index] = DoorStatus.removedUnchosenDoor.value
-
+            
             unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)
         
             if unchosen_doors_indices:
@@ -99,7 +102,7 @@ def monty_logic(door_amount):
                 all
                 user_new_door_choise = np.random.choice(unchosen_doors_indices)
                 
-
+        #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
             #????????
 
             unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
