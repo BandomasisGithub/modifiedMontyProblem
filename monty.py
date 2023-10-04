@@ -15,8 +15,9 @@ def monty_logic(door_amount):
 
 
     #DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('winningDoor', 1), ('chosenWinningDoorByTheUser', 2), ('chosenDoorByTheUser', 3), ('removedDoor', 4)])
-    DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('unchosenWinningDoor', 1), ('currentChosenWinningDoorByTheUser', 2), ('chosenWinningDoorByTheUser', 3), ('chosenDoorByTheUser', 4),
-                                     ('currentChosenDoorByTheUser', 5), ('removedUnchosenDoor', 6), ('removedChosenDoorr', 7)])
+    DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('unchosenWinningDoor', 1), ('currentChosenWinningDoorByTheUser', 2), 
+                    ('chosenWinningDoorByTheUser', 3), ('chosenDoorByTheUser', 4),('currentChosenDoorByTheUser', 5),
+                    ('removedUnchosenDoor', 6), ('removedChosenDoorr', 7)])
 
     
     door_winning_instances = np.array([np.zeros(door_amount)])
@@ -30,35 +31,35 @@ def monty_logic(door_amount):
     for _ in range(0, loop_amount):
           
 
-        doors = np.zeros(door_amount)
+        doors = np.array([np.zeros(door_amount)])
+        doors_status_index = 0
         #doors to remove has 0 as a value
-        doors_to_remove_status = np.zeros(door_amount)
+        
         
 
         user_choise_index = random.randint(1, door_amount) - 1
         winning_door_index = random.randint(1, door_amount) - 1 
         user_choise_sequence = np.array([user_choise_index])
-
+        
         if winning_door_index != user_choise_index:
         
-            doors_to_remove_status[winning_door_index] = DoorStatus.winningDoor.value
-            doors_to_remove_status[user_choise_index] = DoorStatus.chosenDoorByTheUser.value
-            doors[winning_door_index] = DoorStatus.unchosenWinningDoor.value
-            doors[user_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+            doors[doors_status_index][winning_door_index] = DoorStatus.unchosenWinningDoor.value
+            doors[doors_status_index][user_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
         else:
-            doors_to_remove_status[winning_door_index] = DoorStatus.currentWinningDoorByTheUser.value
-            doors[winning_door_index] = DoorStatus.currentWinningDoorByTheUser.value
+            doors[doors_status_index][winning_door_index] = DoorStatus.currentChosenWinningDoorByTheUser.value
              
         #This instance doenst need because there is no chosenWinningDoorByTheUser value 
         #but if i will extract function i should look at DoorStatus.chosenWinningDoorByTheUser.value 
-        
-        winning_index = np.where(np.logical_or(doors ==  DoorStatus.unchosenWinningDoor.value, doors == DoorStatus.currentChosenWinningDoorByTheUser.value))
+
+        winning_index = np.where(np.logical_or(doors[doors_status_index] ==  DoorStatus.unchosenWinningDoor.value,
+                                                doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value,
+                                                doors[doors_status_index] == DoorStatus.chosenWinningDoorByTheUser.value,))
         staying_win_index = 0
 
         
         # I have to print and show percentege of unhosen chosen door percentege
         #this is full door check without removing no doors or changing them
-        if np.where(doors == DoorStatus.currentChosenWinningDoorByTheUserr.value)[0].size != 0:
+        if np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)[0].size != 0:
             amount_of_winning_by_staying[staying_win_index] += 1
         
         staying_win_index += 1
@@ -67,10 +68,10 @@ def monty_logic(door_amount):
         #This takes a wining door and marks in to array that tracks winning instances
         door_winning_instances[0][winning_index] += 1 
 
-
+    
         #userChoise logic
         #user_choise_index = random.randint(1, door_amount)
-        unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
+        unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)
         
         
         
@@ -78,12 +79,28 @@ def monty_logic(door_amount):
         
         #function here probabl
 
-        
-        #maybe i dont need len() and just plane unchosen_doors_indices is enough
-        if len(unchosen_doors_indices) > 0:
+    
+                
 
+        #maybe i dont need len() and just plane unchosen_doors_indices is enough
+        #maybe i have to have len()
+
+        if unchosen_doors_indices:
+            
+            unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)  
+            #and unchosen win
             door_to_remove_index = np.random.choice(unchosen_doors_indices)
-            doors_to_remove_status[user_new_door_choise] = DoorStatus.removedDoor.value
+            doors[doors_status_index][door_to_remove_index] = DoorStatus.removedUnchosenDoor.value
+
+            unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)
+        
+            if unchosen_doors_indices:
+                unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
+                all
+                user_new_door_choise = np.random.choice(unchosen_doors_indices)
+                
+
+            #????????
 
             unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
 
@@ -97,10 +114,7 @@ def monty_logic(door_amount):
             #I should check if it is not empty first
 
 
-            #i should check if this work in the sence that if uchosen_doors_indices is empty does it return False or returns True because i check an empty tuple
-            if unchosen_doors_indices:
-                #should also take unchosen wining instance because now i only take unchosen also should take unchosenWining
-                user_new_door_choise = np.random.choice(unchosen_doors_indices)
+            
 
             #Check logic percentege somehow
 
