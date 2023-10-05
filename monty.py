@@ -105,11 +105,17 @@ def monty_logic(door_amount):
         #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
             #????????
 
+            #for now, only dopercentege calculationd as long as there is U
+            
+         
+
             unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
 
             #Check with removed door without the switch
-            
+            #steps amount to take = 1 + (door_amount - 2)*2 except if there i s2 door because ou dont remove anything
 
+           
+ 
 
 
             #Check the with the switched door
