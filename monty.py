@@ -1,4 +1,4 @@
- import pandas as pd
+import pandas as pd
 import numpy as np
 import random
 from enum import Enum
@@ -13,25 +13,28 @@ def main():
 
 def monty_logic(door_amount):
 
-
+    
     #DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('winningDoor', 1), ('chosenWinningDoorByTheUser', 2), ('chosenDoorByTheUser', 3), ('removedDoor', 4)])
     DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('unchosenWinningDoor', 1), ('currentChosenWinningDoorByTheUser', 2), 
                     ('chosenWinningDoorByTheUser', 3), ('chosenDoorByTheUser', 4),('currentChosenDoorByTheUser', 5),
                     ('removedUnchosenDoor', 6), ('removedChosenDoorr', 7)])
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     
     door_winning_instances = np.array([np.zeros(door_amount)])
-    print(door_winning_instances)
+    
+    
     # Should make range number a variable maybe it issier to control
 
     amount_of_winning_by_staying = np.zeros([door_amount])
     amount_of_winning_by_switching = 0
     loop_amount = 1
-
+    doors_total_switches_amount = 1 + (door_amount - 2)*2
+    
     for _ in range(0, loop_amount):
           
-
-        doors = np.array([np.zeros(door_amount)])
+        
+        #doors = np.array([np.zeros(door_amount)])
+        doors = np.zeros((doors_total_switches_amount, door_amount))
         doors_status_index = 0
         #doors to remove has 0 as a value
         
@@ -39,7 +42,7 @@ def monty_logic(door_amount):
 
         user_choise_index = random.randint(1, door_amount) - 1
         winning_door_index = random.randint(1, door_amount) - 1 
-        user_choise_sequence = np.array([user_choise_index])
+        #user_choise_sequence = np.array([user_choise_index])
         
         if winning_door_index != user_choise_index:
         
@@ -47,10 +50,10 @@ def monty_logic(door_amount):
             doors[doors_status_index][user_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
         else:
             doors[doors_status_index][winning_door_index] = DoorStatus.currentChosenWinningDoorByTheUser.value
-             
+
+
         #This instance doenst need because there is no chosenWinningDoorByTheUser value 
         #but if i will extract function i should look at DoorStatus.chosenWinningDoorByTheUser.value 
-
         winning_index = np.where(np.logical_or(doors[doors_status_index] ==  DoorStatus.unchosenWinningDoor.value,
                                                 doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value,
                                                 doors[doors_status_index] == DoorStatus.chosenWinningDoorByTheUser.value,))
@@ -72,7 +75,7 @@ def monty_logic(door_amount):
         #userChoise logic
         #user_choise_index = random.randint(1, door_amount)
         unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)
-        
+
         
         
 
@@ -84,29 +87,39 @@ def monty_logic(door_amount):
 
         #maybe i dont need len() and just plane unchosen_doors_indices is enough
         #maybe i have to have len()
+    
         
         
-        if unchosen_doors_indices:
+
+        if unchosen_doors_indices[0].any():
             subsequent_door_choise_step = doors[doors_status_index].copy()
-            unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)  
+        
+            #unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)  
             #and unchosen win
+
             doors_status_index += 1
-            doors = doors.append(subsequent_door_choise_step)
-            door_to_remove_index = np.random.choice(unchosen_doors_indices)
+            #print(subsequent_door_choise_step)
+            #doors = doors.append(subsequent_door_choise_step)
+            door_to_remove_index = np.random.choice(unchosen_doors_indices[0])
+            doors[doors_status_index] = subsequent_door_choise_step
             doors[doors_status_index][door_to_remove_index] = DoorStatus.removedUnchosenDoor.value
             
+            #AFTER REMOVE I HAVE TO CHECK IF THERE IS UNCHOSEN VALUES AND CHOOSE THEM
+            #AND REPEAT THE LOOP UNTIL THERE IS NONE ANYMORE
+
+
             unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)
-        
-            if unchosen_doors_indices:
+
+            if unchosen_doors_indices[0].any():
                 unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
-                all
+                #all
                 user_new_door_choise = np.random.choice(unchosen_doors_indices)
                 
-        #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
+            #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
             #????????
-
-            #for now, only dopercentege calculationd as long as there is U
             
+            #for now, only dopercentege calculationd as long as there is U
+
          
 
             unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
@@ -139,7 +152,7 @@ def monty_logic(door_amount):
         #CHECK WITHOUT SWITCHING
         #END IF IT WOULD BE IT
 
-
+    return
 
     wSum = np.sum(door_winning_instances[0])
     door_number = 1
