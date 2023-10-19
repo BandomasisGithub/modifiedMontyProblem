@@ -54,6 +54,9 @@ def monty_logic(door_amount):
 
         #This instance doenst need because there is no chosenWinningDoorByTheUser value 
         #but if i will extract function i should look at DoorStatus.chosenWinningDoorByTheUser.value 
+
+
+        #GRAZINA NE INDEXUS BET BOOL VERTES !!!!!!!!
         winning_index = np.where(np.logical_or(doors[doors_status_index] ==  DoorStatus.unchosenWinningDoor.value,
                                                 doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value,
                                                 doors[doors_status_index] == DoorStatus.chosenWinningDoorByTheUser.value,))
@@ -108,12 +111,30 @@ def monty_logic(door_amount):
             #AND REPEAT THE LOOP UNTIL THERE IS NONE ANYMORE
 
 
-            unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)
+            unchosen_doors_indices = unchosen_doors_indices = np.logical_or(
+                                    doors[doors_status_index] == DoorStatus.unchosenDoor.value,
+                                    doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
+            
 
+
+
+            print(unchosen_doors_indices)
+            print(unchosen_doors_indices[0].any())
             if unchosen_doors_indices[0].any():
-                unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
+
+                #unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
                 #all
-                user_new_door_choise = np.random.choice(unchosen_doors_indices)
+                user_new_door_choise_index = np.random.choice(unchosen_doors_indices)
+                currentChosenWinningDoorByTheUserCheck  = np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)
+                if currentChosenWinningDoorByTheUserCheck[0].any():
+                    
+                    doors[doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+                    doors[doors_status_index][currentChosenWinningDoorByTheUserCheck[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
+                    continue
+                else:
+                    doors[doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenWinningDoorByTheUser.value
+                    continue
+            return
                 
             #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
             #????????
@@ -121,7 +142,7 @@ def monty_logic(door_amount):
             #for now, only dopercentege calculationd as long as there is U
 
          
-
+            
             unchosen_doors_indices = np.where(doors_to_remove_status == DoorStatus.unchosenDoor.value)
 
             #Check with removed door without the switch
@@ -145,7 +166,7 @@ def monty_logic(door_amount):
                 doors_to_remove_status[user_new_door_choise] = DoorStatus.chosenWinningDoorByTheUser.value
 
                 #Check logic percentege somehow after switch
-
+        return 
                    
 
 
