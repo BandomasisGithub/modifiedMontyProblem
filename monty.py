@@ -126,13 +126,7 @@ def monty_logic(door_amount):
                 user_new_door_choise_index = np.random.choice(all_unchosen_doors_indices)
                 current_chosen_door_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenDoorByTheUser.value)
                 currentChosenWinningDoorByTheUserIndex = np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)
-                if current_chosen_door_index[0].any():
-                    print(current_chosen_door_index[0][0])
-                    print(doors[0])
-                else:
-                    print("desont")
-                    print(doors[0])
-                return
+                
                 if currentChosenWinningDoorByTheUserIndex[0].any():
                     
                     doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
