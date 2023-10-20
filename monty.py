@@ -100,12 +100,12 @@ def monty_logic(door_amount):
             #unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)  
             #and unchosen win
 
-            doors_status_index += 1
+            next_doors_status_index = doors_status_index + 1
             #print(subsequent_door_choise_step)
             #doors = doors.append(subsequent_door_choise_step)
             door_to_remove_index = np.random.choice(unchosen_doors_indices[0])
-            doors[doors_status_index] = subsequent_door_choise_step
-            doors[doors_status_index][door_to_remove_index] = DoorStatus.removedUnchosenDoor.value
+            doors[next_doors_status_index] = subsequent_door_choise_step
+            doors[next_doors_status_index][door_to_remove_index] = DoorStatus.removedUnchosenDoor.value
             
             #AFTER REMOVE I HAVE TO CHECK IF THERE IS UNCHOSEN VALUES AND CHOOSE THEM
             #AND REPEAT THE LOOP UNTIL THERE IS NONE ANYMORE
@@ -124,16 +124,26 @@ def monty_logic(door_amount):
                 #unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
                 #all
                 user_new_door_choise_index = np.random.choice(all_unchosen_doors_indices)
+                current_chosen_door_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenDoorByTheUser.value)
                 currentChosenWinningDoorByTheUserIndex = np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)
+                if current_chosen_door_index[0].any():
+                    print(current_chosen_door_index[0][0])
+                    print(doors[0])
+                else:
+                    print("desont")
+                    print(doors[0])
+                return
                 if currentChosenWinningDoorByTheUserIndex[0].any():
                     
-                    doors[doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
-                    doors[doors_status_index][currentChosenWinningDoorByTheUserIndex[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
-                    continue
+                    doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+                    doors[next_doors_status_index][currentChosenWinningDoorByTheUserIndex[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
+                    #continue
                 else:
-                    doors[doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenWinningDoorByTheUser.value
-                    continue
-            print(doors)
+                    
+                    doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+                    doors[next_doors_status_index][current_chosen_door_index[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
+                    #continue
+            print(current_chosen_door_index)
             return
                 
             #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
@@ -184,6 +194,7 @@ def monty_logic(door_amount):
     for winning_instances in door_winning_instances[0]:
         percentege = (winning_instances/wSum) * 100
         door_number_STR = str(door_number)
+        
         percentege_STR = str(percentege)
         print(door_number_STR + "d = " + percentege_STR + " %")
         door_number += 1
