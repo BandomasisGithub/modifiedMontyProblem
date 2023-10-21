@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 from enum import Enum
+import random
 
 def main():
 
@@ -115,29 +116,43 @@ def monty_logic(door_amount):
             #                        doors[doors_status_index] == DoorStatus.unchosenDoor.value,
             #                        doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
             
-            unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value) 
-            unchosen_winning_door_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
-            all_unchosen_doors_indices = np.concatenate((unchosen_doors_indices[0], unchosen_winning_door_index[0]))
+            unchosen_doors_indices = np.where(doors[doors_status_index] == DoorStatus.unchosenDoor.value)[0] 
+            unchosen_winning_door_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)[0]
+            all_unchosen_doors_indices = np.concatenate((unchosen_doors_indices, unchosen_winning_door_index))
 
-            if all_unchosen_doors_indices.any():
-                
-                #unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
-                #all
-                user_new_door_choise_index = np.random.choice(all_unchosen_doors_indices)
-                current_chosen_door_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenDoorByTheUser.value)
-                currentChosenWinningDoorByTheUserIndex = np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)
-                
-                if currentChosenWinningDoorByTheUserIndex[0].any():
+            all_unchosen_doors_amount = unchosen_doors_indices.size
+        
+            "I should remove unchosen door indices from array etc"
+            while all_unchosen_doors_amount:
+
+                if all_unchosen_doors_indices.any():
                     
-                    doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
-                    doors[next_doors_status_index][currentChosenWinningDoorByTheUserIndex[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
-                    #continue
-                else:
+                    #unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
+                    #all
+                    user_new_door_choise_indeces_index = random.randint(0, all_unchosen_doors_amount-1)
+                    user_new_door_choise_index = all_unchosen_doors_indices[user_new_door_choise_indeces_index]
+                    #user_new_door_choise_index = np.random.choice(all_unchosen_doors_indices)
+                    #unchosen_doors_indices = np.delete(unchosen_doors_indices, user_new_door_choise_index)
+
+                    current_chosen_door_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenDoorByTheUser.value)
+                    #current_chosen_winning_door_by_user_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)
                     
-                    doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
-                    doors[next_doors_status_index][current_chosen_door_index[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
-                    #continue
-            print(current_chosen_door_index)
+                    if doors[doors_status_index][current_chosen_door_index] == DoorStatus.currentChosenDoorByTheUser.value:
+                        
+                        doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+                        doors[next_doors_status_index][current_chosen_door_index[doors_status_index][0]] = DoorStatus.chosenWinningDoorByTheUser.value
+                        all_unchosen_doors_amount -= 1
+                        #continue
+                    else:
+                        
+                        doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+                        doors[next_doors_status_index][current_chosen_door_index[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
+                        doors[]
+                        unchosen_doors_indices = np.delete(unchosen_doors_indices, user_new_door_choise_indeces_index)
+                        all_unchosen_doors_amount -= 1
+                        #continue
+
+            print(doors)
             return
                 
             #skaiciavimus atlieku po if(skaiciavimai - 1u 2u v c c sutvarkau masyva kuris seka instances ir kiek kartu o po funkcijos naudoju ji kad suskaiciuociu tikrus procentus)
