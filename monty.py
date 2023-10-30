@@ -9,7 +9,7 @@ def main():
     door_amount_in_game = 7
 
     monty_logic(door_amount_in_game)
-    
+    print("Chceck that executes")
     return
 
 def monty_logic(door_amount):
@@ -116,17 +116,17 @@ def monty_logic(door_amount):
                 doors[next_doors_status_index] = subsequent_door_choise_step
 
                 #bb cia kazkoks 
-                door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
+                door_to_remove_index_choise = random.randint(0, all_unchosen_doors_amount-1)
                 #print("why does it delete winning door ")
                 #print(doors[next_doors_status_index][all_unchosen_doors_indices[door_to_remove_index_index]])
-                while doors[doors_status_index][all_unchosen_doors_indices[door_to_remove_index_index]] == DoorStatus.unchosenWinningDoor.value:
+                while doors[doors_status_index][all_unchosen_doors_indices[door_to_remove_index_choise]] == DoorStatus.unchosenWinningDoor.value:
                     #print("one of the errors")
                     #print(all_unchosen_doors_amount)
-                    door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
+                    door_to_remove_index_choise = random.randint(0, all_unchosen_doors_amount-1)
                 
-                door_to_remove_index = all_unchosen_doors_indices[door_to_remove_index_index]
+                door_to_remove_index = all_unchosen_doors_indices[door_to_remove_index_choise]
 
-                all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, door_to_remove_index_index)
+                all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, door_to_remove_index_choise)
                 #print(doors[next_doors_status_index][door_to_remove_index])
                 doors[next_doors_status_index][door_to_remove_index] = DoorStatus.removedUnchosenDoor.value
 
@@ -193,11 +193,12 @@ def monty_logic(door_amount):
             
             #iskelt sita i funkcija gal
             #pakeist while teigini
+            #VISOS DURYS BUVO BENT KARTA PASIRINKTOS REIKIA TOLIAU ISMEST KOL LIKS TIK DVI IR ISSAUGOT VISAS
             while doors[doors_status_index][all_unchosen_doors_indices[door_to_remove_index_index]] == DoorStatus.unchosenWinningDoor.value:
 
 
                 #SITAS KEICIAS
-                door_to_remove_index_index = random.randint(0, left_possible_choises_doors_amount - 1)
+                door_to_remove_index_choise = random.randint(0, left_possible_choises_doors_amount - 1)
                 #user_new_door_choise_indeces_index = random.randint(0, left_possible_choises_doors_amount - 1)
 
                 door_to_remove_index = left_possible_choises_doors_indices[door_to_remove_index_index]
