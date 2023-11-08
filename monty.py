@@ -77,11 +77,18 @@ class montyLogic:
                 
                 while all_unchosen_doors_amount:
 
-                    #subsequent_door_choise_step = self.doors_state[self.doors_status_index].copy()
-                    #next_doors_status_index = self.doors_status_index + 1
-                    #self.doors_state[next_doors_status_index] = subsequent_door_choise_step
+                    #Check that i would remove chosen door and choose later unchosen wining door
+                    
+                    if (all_unchosen_doors_amount == 1 and 
+                        self.doors_state[0][self.all_unchosen_doors_indices[0]] == self.DoorStatus.unchosenWinningDoor.value):
+
+                        all_unchosen_doors_amount = self.removing_doors(all_unchosen_doors_amount,self.DoorStatus.chosenDoorByTheUser.value, self.all_unchosen_doors_indices)
+                        print(self.doors_state)
+                        return
+              
+
                     self.last_door_status_step_copy()
-                    all_unchosen_doors_amount = self.removing_doors(all_unchosen_doors_amount,self.DoorStatus.unchosenWinningDoor.value)
+                    all_unchosen_doors_amount = self.removing_doors(all_unchosen_doors_amount,self.DoorStatus.unchosenWinningDoor.value,self.all_unchosen_doors_indices)
                     self.last_door_status_step_copy()
                     #sitas removing_doors function
                     #door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
@@ -94,48 +101,44 @@ class montyLogic:
                     #self.doors_state[self.next_doors_status_index][door_to_remove_index] = self.DoorStatus.removedUnchosenDoor.value
                     #all_unchosen_doors_amount -= 1
 
-                    print("s")
-                    print(self.doors_state)
                     
+                    continue
                     #START OF ANOTHER THING I GUESS
-                    if all_unchosen_doors_amount != 0:
+                    #this if is redundant because while statement checks this before
+                    #if all_unchosen_doors_amount != 0:
+                    
+                    user_new_door_choise_indeces_index = random.randint(0, all_unchosen_doors_amount-1)
+                    user_new_door_choise_index = self.all_unchosen_doors_indices[user_new_door_choise_indeces_index]
+
+                    current_chosen_door_index = np.where(self.doors_state[doors_status_index] == self.DoorStatus.currentChosenDoorByTheUser.value)
+                    current_chosen_winning_door_by_user_index = np.where(self.doors_state[doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)
+                    
+                    if current_chosen_winning_door_by_user_index[0].size:
+
+                        self.doors_state[next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
+                        self.doors_state[next_doors_status_index][current_chosen_winning_door_by_user_index[0][0]] = self.DoorStatus.chosenWinningDoorByTheUser.value
+                        all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, user_new_door_choise_indeces_index)
+
+                        all_unchosen_doors_amount -= 1
+
+                        #continue
+                    elif doors[doors_status_index][user_new_door_choise_index] == DoorStatus.unchosenWinningDoor.value:
                         
-                        #unchosen_winning_doors_index = np.where(doors[doors_status_index] == DoorStatus.unchosenWinningDoor.value)
-                        #print(all_unchosen_doors_amount)
-                        user_new_door_choise_indeces_index = random.randint(0, all_unchosen_doors_amount-1)
-                        user_new_door_choise_index = self.all_unchosen_doors_indices[user_new_door_choise_indeces_index]
-                        #user_new_door_choise_index = np.random.choice(all_unchosen_doors_indices)
-                        #unchosen_doors_indices = np.delete(unchosen_doors_indices, user_new_door_choise_index)
-
-                        current_chosen_door_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenDoorByTheUser.value)
-                        current_chosen_winning_door_by_user_index = np.where(doors[doors_status_index] == DoorStatus.currentChosenWinningDoorByTheUser.value)
+                        doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.chosenWinningDoorByTheUser.value
+                        all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, user_new_door_choise_indeces_index)
+                        all_unchosen_doors_amount -= 1 
+                    else:
                         
-                        if current_chosen_winning_door_by_user_index[0].size:
+                        doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
+                        doors[next_doors_status_index][current_chosen_door_index[0][0]] = DoorStatus.chosenDoorByTheUser.value
+                        all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, user_new_door_choise_indeces_index)
 
-                            doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
-                            doors[next_doors_status_index][current_chosen_winning_door_by_user_index[0][0]] = DoorStatus.chosenWinningDoorByTheUser.value
-                            all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, user_new_door_choise_indeces_index)
+                        all_unchosen_doors_amount -= 1
 
-                            all_unchosen_doors_amount -= 1
-
-                            #continue
-                        elif doors[doors_status_index][user_new_door_choise_index] == DoorStatus.unchosenWinningDoor.value:
-                            
-                            doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.chosenWinningDoorByTheUser.value
-                            all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, user_new_door_choise_indeces_index)
-                            all_unchosen_doors_amount -= 1 
-                        else:
-                            
-                            doors[next_doors_status_index][user_new_door_choise_index] = DoorStatus.currentChosenDoorByTheUser.value
-                            doors[next_doors_status_index][current_chosen_door_index[0][0]] = DoorStatus.chosenDoorByTheUser.value
-                            all_unchosen_doors_indices = np.delete(all_unchosen_doors_indices, user_new_door_choise_indeces_index)
-
-                            all_unchosen_doors_amount -= 1
-
-                            #continue
+                        #continue
 
                     doors_status_index += 1
-
+                return
                 #now the confusing part I guess
                 
                 doors_status_index = next_doors_status_index
@@ -162,28 +165,38 @@ class montyLogic:
 
     # I should give status i am searching to remove 
 
-    def removing_doors(self, all_unchosen_doors_amount, removable_door_status):
+    def removing_doors(self, all_unchosen_doors_amount, removable_door_status, doors_to_remove_indices):
 
         door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
-
-        while self.doors_state[self.doors_status_index][self.all_unchosen_doors_indices[door_to_remove_index_index]] == removable_door_status:
-
+        # maybe change the name doors_status_index to something more precise
+        while self.doors_state[self.doors_status_index][doors_to_remove_indices[door_to_remove_index_index]] == self.DoorStatus.unchosenWinningDoor.value:
+        #while self.doors_state[self.doors_status_index][doors_to_remove_indices[door_to_remove_index_index]] == self.DoorStatus.unchosenWinningDoor.value
+            #This while should be elswere because it is condition that later on removing non unchosen will pointless
+            if all_unchosen_doors_amount == 1:
+                return all_unchosen_doors_amount
+            
             door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
                     
-        door_to_remove_index = self.all_unchosen_doors_indices[door_to_remove_index_index]
-        self.all_unchosen_doors_indices = np.delete(self.all_unchosen_doors_indices, door_to_remove_index_index)
-        self.doors_state[self.next_doors_status_index][door_to_remove_index] = self.DoorStatus.removedUnchosenDoor.value
+        door_to_remove_index = doors_to_remove_indices[door_to_remove_index_index]
+        doors_to_remove_indices = np.delete(doors_to_remove_indices, door_to_remove_index_index)
+        self.doors_state[self.next_doors_status_index][door_to_remove_index] = removable_door_status
 
         return all_unchosen_doors_amount - 1
         
     
     def last_door_status_step_copy(self):
+        # I Should fix this because there is definetly an error here
+        try:
 
-        subsequent_door_choise_step = self.doors_state[self.doors_status_index].copy()
-        self.next_doors_status_index = self.doors_status_index + 1
-        self.doors_state[self.next_doors_status_index] = subsequent_door_choise_step
-        self.doors_status_index += 1
-
+            subsequent_door_choise_step = self.doors_state[self.doors_status_index].copy()
+            self.next_doors_status_index = self.doors_status_index + 1
+            self.doors_state[self.next_doors_status_index] = subsequent_door_choise_step
+            self.doors_status_index += 1
+        except IndexError:
+            print(self.doors_state)
+            self.doors_status_index -= 1
+            self.next_doors_status_index = self.doors_status_index
+        
         return
 
 
