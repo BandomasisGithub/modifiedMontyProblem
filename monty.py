@@ -166,29 +166,7 @@ class montyLogic:
 
                     doors_status_index += 1
                 return
-                #now the confusing part I guess
-                
-                doors_status_index = next_doors_status_index
-                next_doors_status_index += 1
 
-
-
-
-
-                left_wrong_doors_indices = np.where((doors[doors_status_index] != DoorStatus.removedUnchosenDoor.value)
-                                                        & (doors[doors_status_index] != DoorStatus.currentChosenDoorByTheUser.value) 
-                                                        & (doors[doors_status_index] != DoorStatus.currentChosenWinningDoorByTheUser.value))[0]
-                winning_door_index = np.where(doors[doors_status_index] == DoorStatus.chosenWinningDoorByTheUser.value)[0]
-                #ISKYRUS CURRENT CHOSEN WINNING DOOR BY THE USER NEPARINKTAS!!!!!
-                left_possible_choises_doors_indices = np.concatenate((left_wrong_doors_indices, winning_door_index))
-                left_possible_choises_doors_amount = left_possible_choises_doors_indices[0].size 
-
-                
-                print(doors)
-
-
-
-                return
 
     # I should give status i am searching to remove 
 
