@@ -24,6 +24,7 @@ class montyLogic:
         self.doors_total_switches_amount = 1 + (self.door_amount - 2)*2
         self.doors_status_index = 0
         self.next_doors_status_index = 0
+        self.selectable_not_removable_winning_door_index = np.empty((0,0))
         self.all_unchosen_doors_indices = np.empty((0,0))
     #class DoorStatus(Enum):
     #    unchosenDoor = 0
@@ -63,19 +64,19 @@ class montyLogic:
             
 
             #START of something
-            unchosen_doors_indices = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenDoor.value)[0]
+            removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenDoor.value)[0]
             
-            if unchosen_doors_indices.any():
+            if removable_doors_indices.any():
 
             
                 #unchosen_doors_indices = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenDoor.value)[0] 
-                unchosen_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenWinningDoor.value)[0]
-                self.all_unchosen_doors_indices = np.concatenate((unchosen_doors_indices, unchosen_winning_door_index))
+                self.selectable_not_removable_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenWinningDoor.value)[0]
+                self.all_removable_doors_indices = np.concatenate((removable_doors_indices, self.selectable_not_removable_winning_door_index))
 
-                all_unchosen_doors_amount = self.all_unchosen_doors_indices.size
+                all_removable_doors_amount = self.all_removable_doors_indices.size
 
                 
-                while all_unchosen_doors_amount:
+                while all_removable_doors_amount:
 
                     #Check that i would remove chosen door and choose later unchosen wining door
                     
@@ -87,8 +88,21 @@ class montyLogic:
                         return
               
 
-                    self.last_door_status_step_copy()
-                    all_unchosen_doors_amount = self.removing_doors(all_unchosen_doors_amount,self.DoorStatus.unchosenWinningDoor.value,self.all_unchosen_doors_indices)
+                    # as turiu masyva be winning door man teoriskai reikia paduot kita masyva ir nereikes sito check
+                    #if (all_unchosen_doors_amount == 1 and 
+                     #   self.last_door_status_step_copy(self.all_unchosen_doors_indices[0]) == self.DoorStatus.unchosenWinningDoor.value):
+                        
+                      #  all_unchosen_doors_amount = self.removing_doors(all_unchosen_doors_amount,
+                       #                                             self.DoorStatus.removedUnchosenDoor.value,
+                        #                                            self.DoorStatus.unchosenWinningDoor.value,
+                         #                                           self.all_unchosen_doors_indices)
+                        
+                    else: 
+                        all_unchosen_doors_amount = self.removing_doors(all_removable_doors_amount,
+                                                                    self.DoorStatus.unchosen_doors_indices.value,
+                                                                    self.DoorStatus.unchosenWinningDoor.value,
+                                                                    self.all_removable_doors_indices)
+                        
                     self.last_door_status_step_copy()
                     #sitas removing_doors function
                     #door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
@@ -165,23 +179,23 @@ class montyLogic:
 
     # I should give status i am searching to remove 
 
-    def removing_doors(self, all_unchosen_doors_amount, removable_door_status, doors_to_remove_indices):
+    def removing_doors(self, removable_doors_amount, removable_door_status,selectable_not_removable_door_status,doors_to_remove_indices):
 
-        door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
+        door_to_remove_index_index = random.randint(0, removable_doors_amount-2)#- 2 because array index is one less and because we dont see winning door
         # maybe change the name doors_status_index to something more precise
-        while self.doors_state[self.doors_status_index][doors_to_remove_indices[door_to_remove_index_index]] == self.DoorStatus.unchosenWinningDoor.value:
+
+        #gali tekt pasalint while nes nebereikes bet pakeist kad pasalintu is kito masyve gal
+        while (self.doors_state[self.doors_status_index][doors_to_remove_indices[door_to_remove_index_index]] == 
+               selectable_not_removable_door_status):
         #while self.doors_state[self.doors_status_index][doors_to_remove_indices[door_to_remove_index_index]] == self.DoorStatus.unchosenWinningDoor.value
-            #This while should be elswere because it is condition that later on removing non unchosen will pointless
-            if all_unchosen_doors_amount == 1:
-                return all_unchosen_doors_amount
-            
-            door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
+            #This while should be elswere because it is condition that later on removing non unchosen will pointless        
+            door_to_remove_index_index = random.randint(0, removable_doors_amount-1)
                     
         door_to_remove_index = doors_to_remove_indices[door_to_remove_index_index]
         doors_to_remove_indices = np.delete(doors_to_remove_indices, door_to_remove_index_index)
         self.doors_state[self.next_doors_status_index][door_to_remove_index] = removable_door_status
 
-        return all_unchosen_doors_amount - 1
+        return removable_doors_amount - 1
         
     
     def last_door_status_step_copy(self):
