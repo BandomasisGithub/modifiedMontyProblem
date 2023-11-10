@@ -143,6 +143,8 @@ class montyLogic:
                     user_new_door_choise_indeces_index = random.randint(0, all_unchosen_doors_amount-1)
                     user_new_door_choise_index = self.all_unchosen_doors_indices[user_new_door_choise_indeces_index]
 
+
+                    #sitos eilutes skiriasi nemest jei dedu i if i guess
                     current_chosen_door_index = np.where(self.doors_state[doors_status_index] == self.DoorStatus.currentChosenDoorByTheUser.value)
                     current_chosen_winning_door_by_user_index = np.where(self.doors_state[doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)
 
@@ -178,15 +180,16 @@ class montyLogic:
 
     # I should give status i am searching to remove 
 
-    def changing_door_status(self, removable_doors_amount, removable_door_status, doors_to_remove_indices, all_changable_doors_indices):
+    def changing_door_status(self, changable_doors_amount, changable_door_status,
+                             doors_to_change_indices, all_changable_doors_indices, default_change_index):
 
-        door_to_remove_index_index = random.randint(0, removable_doors_amount-1)        
-        door_to_remove_index = doors_to_remove_indices[door_to_remove_index_index]
+        door_to_change_index_index = random.randint(0, changable_doors_amount-1)        
+        door_to_change_index = doors_to_change_indices[door_to_change_index_index]
 
         #apacioj turetu but self doors ir kartojas kintamojo vardas 2 kartus
-        doors_to_remove_indices = np.delete(doors_to_remove_indices, door_to_remove_index_index)
-        doors_to_remove_indices = np.delete(all_changable_doors_indices, door_to_remove_index_index)
-        self.doors_state[self.next_doors_status_index][door_to_remove_index] = removable_door_status
+        doors_to_change_indices = np.delete(doors_to_change_indices, door_to_change_index_index)
+        all_changable_doors_indices = np.delete(all_changable_doors_indices, door_to_change_index_index)
+        self.doors_state[self.next_doors_status_index][door_to_change_index] = changable_door_status
 
         return removable_doors_amount - 1
         
