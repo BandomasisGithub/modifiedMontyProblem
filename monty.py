@@ -40,7 +40,7 @@ class montyLogic:
 
     DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('unchosenWinningDoor', 1), ('currentChosenWinningDoorByTheUser', 2), 
                     ('chosenWinningDoorByTheUser', 3), ('chosenDoorByTheUser', 4),('currentChosenDoorByTheUser', 5),
-                    ('removedUnchosenDoor', 6), ('removedChosenDoorr', 7)])
+                    ('removedUnchosenDoor', 6), ('removedChosenDoor', 7)])
 
     def monty_logic_loop(self):
 
@@ -110,13 +110,19 @@ class montyLogic:
                          #                                           self.all_unchosen_doors_indices)
                         
                     self.last_door_status_step_copy()
-                    
-                    all_unchosen_doors_amount = self.removing_doors(all_removable_doors_amount,
-                                                                    self.DoorStatus.unchosen_doors_indices.value,
+                    removable_doors_amount = all_unchosen_doors_amount - 1  
+                    removable_doors_amount = self.changing_door_status(removable_doors_amount,
+                                                                    self.DoorStatus.removedUnchosenDoor.value,
                                                                     self.removable_doors_indices,
                                                                     self.all_removable_doors_indices)
-                        
+                    
+                    all_unchosen_doors_amount = removable_doors_amount + 1
                     self.last_door_status_step_copy()
+                    all_unchosen_doors_amount = self.changing_door_status(all_unchosen_doors_amount,
+                                                                    self.DoorStatus.chosenDoorByTheUser.value,
+                                                                    self.removable_doors_indices,
+                                                                    self.all_removable_doors_indices)
+                    
                     #sitas removing_doors function
                     #door_to_remove_index_index = random.randint(0, all_unchosen_doors_amount-1)
                     #while self.doors_state[self.doors_status_index][all_unchosen_doors_indices[door_to_remove_index_index]] == self.DoorStatus.unchosenWinningDoor.value:
@@ -139,6 +145,8 @@ class montyLogic:
 
                     current_chosen_door_index = np.where(self.doors_state[doors_status_index] == self.DoorStatus.currentChosenDoorByTheUser.value)
                     current_chosen_winning_door_by_user_index = np.where(self.doors_state[doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)
+
+                    #in theory i am changing status it is the same as removing i should rename remove method and make it change door status
                     
                     if current_chosen_winning_door_by_user_index[0].size:
 
@@ -170,18 +178,18 @@ class montyLogic:
 
     # I should give status i am searching to remove 
 
-    def removing_doors(self, removable_doors_amount, removable_door_status, doors_to_remove_indices, all_changable_doors_indices):
+    def changing_door_status(self, removable_doors_amount, removable_door_status, doors_to_remove_indices, all_changable_doors_indices):
 
-        door_to_remove_index_index = random.randint(0, removable_doors_amount-2)#- 2 because array index is one less and because we dont see winning door        
+        door_to_remove_index_index = random.randint(0, removable_doors_amount-1)        
         door_to_remove_index = doors_to_remove_indices[door_to_remove_index_index]
+
+        #apacioj turetu but self doors ir kartojas kintamojo vardas 2 kartus
         doors_to_remove_indices = np.delete(doors_to_remove_indices, door_to_remove_index_index)
         doors_to_remove_indices = np.delete(all_changable_doors_indices, door_to_remove_index_index)
         self.doors_state[self.next_doors_status_index][door_to_remove_index] = removable_door_status
 
         return removable_doors_amount - 1
         
-    def choosing_doors()
-    
     
     def last_door_status_step_copy(self):
         # I Should fix this because there is definetly an error here
