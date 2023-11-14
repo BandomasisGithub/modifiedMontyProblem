@@ -149,7 +149,7 @@ class montyLogic:
         #current_chosen_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)[0]
 
 
-        if self.user_winning_door_index == self.user_choise_index:
+        if self.winning_door_index == self.user_choise_index:
         #if current_chosen_winning_door_index.size:
             
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
