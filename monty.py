@@ -156,7 +156,7 @@ class montyLogic:
             self.doors_state[self.next_doors_status_index][current_chosen_winning_door_index[0]] = self.DoorStatus.chosenWinningDoorByTheUser.value
 
         #elif self.doors_state[self.doors_status_index][user_new_door_choise_index] == self.DoorStatus.unchosenWinningDoor.value:
-        elif self.user_winning_door_index == user_new_door_choise_index: 
+        elif self.winning_door_index == user_new_door_choise_index: 
             #not_current_winning_door_status == self.DoorStatus.unchosenWinningDoor.value:
             #PAKEIST JI NES GALIU PERNAUDOT FUNKCIJA ANTRAM RINKIMUI
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.chosenWinningDoorByTheUser.value
