@@ -24,6 +24,8 @@ class montyLogic:
         self.doors_total_switches_amount = 1 + (self.door_amount - 2)*2
         self.doors_status_index = 0
         self.next_doors_status_index = 0
+        self.user_choise_index = 0
+        self.winning_door_index = 0
         self.selectable_not_removable_winning_door_index = np.empty((0,0))
         self.removable_doors_indices = np.empty((0,0))
         self.all_unchosen_doors_indices = np.empty((0,0))
@@ -140,16 +142,21 @@ class montyLogic:
         user_new_door_choise_indeces_index = random.randint(0, all_removable_doors_amount-1)
         user_new_door_choise_index = all_changable_doors_indices[user_new_door_choise_indeces_index]
 
-        current_chosen_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenDoorByTheUser.value)
-        current_chosen_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)[0]
+        #self.user_choise_index = all_changable_doors_indices[user_new_door_choise_indeces_index]
+        #self.winning_door_index
+        
+        #current_chosen_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenDoorByTheUser.value)
+        #current_chosen_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)[0]
 
 
-        if current_chosen_winning_door_index.size:
+        if self.user_winning_door_index == self.user_choise_index:
+        #if current_chosen_winning_door_index.size:
             
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
             self.doors_state[self.next_doors_status_index][current_chosen_winning_door_index[0]] = self.DoorStatus.chosenWinningDoorByTheUser.value
 
-        elif self.doors_state[self.doors_status_index][user_new_door_choise_index] == self.DoorStatus.unchosenWinningDoor.value:
+        #elif self.doors_state[self.doors_status_index][user_new_door_choise_index] == self.DoorStatus.unchosenWinningDoor.value:
+        elif self.user_winning_door_index == user_new_door_choise_index: 
             #not_current_winning_door_status == self.DoorStatus.unchosenWinningDoor.value:
             #PAKEIST JI NES GALIU PERNAUDOT FUNKCIJA ANTRAM RINKIMUI
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.chosenWinningDoorByTheUser.value
@@ -157,9 +164,10 @@ class montyLogic:
         else:
             
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
-            self.doors_state[self.next_doors_status_index][current_chosen_door_index[0][0]] = self.DoorStatus.chosenDoorByTheUser.value
+            self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenDoorByTheUser.value
             #pakeist self.DoorStatus.chosenDoorByTheUser.value irgi pakeist nes antaram rinkimui ir treciam gali skirtis
 
+        self.user_choise_index = user_new_door_choise_index
         all_changable_doors_indices = np.delete(all_changable_doors_indices, user_new_door_choise_indeces_index)
         doors_to_remove_indices = np.delete(doors_to_remove_indices, user_new_door_choise_indeces_index)
         self.doors_status_index += 1
