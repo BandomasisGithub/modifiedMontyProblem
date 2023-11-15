@@ -126,8 +126,8 @@ class montyLogic:
         door_to_change_index = self.removable_doors_indices[door_to_change_index_index]
         #JEIGU REIKES PADARYT KAD METHODui paduotu variable vietos set self.param galiu pet funkcijas 
         #getattr and setattr
-        self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_change_index_index)
-        self.all_unchosen_doors_indices = np.delete(self.all_unchosen_doors_indices, door_to_change_index_index)
+        self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_change_index_index)[0]
+        self.all_unchosen_doors_indices = np.delete(self.all_unchosen_doors_indices, door_to_change_index_index)[0]
         self.doors_state[self.next_doors_status_index][door_to_change_index] = removable_door_status
 
         return removable_doors_amount - 1
@@ -166,8 +166,8 @@ class montyLogic:
             #pakeist self.DoorStatus.chosenDoorByTheUser.value irgi pakeist nes antaram rinkimui ir treciam gali skirtis
 
         self.user_choise_index = user_new_door_choise_index
-        self.removable_doors_indices = np.delete(all_changable_doors_indices, user_new_door_choise_indeces_index)
-        self.all_removable_doors_indices = np.delete(self.all_removable_doors_indices, user_new_door_choise_indeces_index)
+        self.removable_doors_indices = np.delete(all_changable_doors_indices, user_new_door_choise_indeces_index)[0]
+        self.all_removable_doors_indices = np.delete(self.all_removable_doors_indices, user_new_door_choise_indeces_index)[0]
         #self.doors_status_index += 1
 
         return all_removable_doors_amount - 1
