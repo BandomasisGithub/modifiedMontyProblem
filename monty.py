@@ -123,7 +123,7 @@ class montyLogic:
         #self.all_unchosen_doors_indices
                                 
         door_to_change_index_index = random.randint(0, removable_doors_amount-1)        
-        door_to_change_index = doors_to_remove_indices[door_to_change_index_index]
+        door_to_change_index = self.removable_doors_indices[door_to_change_index_index]
         #JEIGU REIKES PADARYT KAD METHODui paduotu variable vietos set self.param galiu pet funkcijas 
         #getattr and setattr
         self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_change_index_index)
@@ -138,7 +138,7 @@ class montyLogic:
         #self.removable_doors_indices,
         #self.all_removable_doors_indices
         user_new_door_choise_indeces_index = random.randint(0, all_removable_doors_amount-1)
-        user_new_door_choise_index = all_changable_doors_indices[user_new_door_choise_indeces_index]
+        user_new_door_choise_index = self.all_unchosen_doors_indices[user_new_door_choise_indeces_index]
 
         #self.user_choise_index = all_changable_doors_indices[user_new_door_choise_indeces_index]
         #self.self.winning_door_index
