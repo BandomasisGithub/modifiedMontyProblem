@@ -164,7 +164,6 @@ class montyLogic:
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
             self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenDoorByTheUser.value
             #pakeist self.DoorStatus.chosenDoorByTheUser.value irgi pakeist nes antaram rinkimui ir treciam gali skirtis
-
         self.user_choise_index = user_new_door_choise_index
         self.removable_doors_indices = np.delete(all_changable_doors_indices, user_new_door_choise_indeces_index)[0]
         self.all_removable_doors_indices = np.delete(self.all_removable_doors_indices, user_new_door_choise_indeces_index)[0]
