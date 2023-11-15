@@ -97,14 +97,12 @@ class montyLogic:
                         self.last_door_status_step_copy()
                         self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.chosenDoorByTheUser.value)[0]
                         removable_doors_amount = all_removable_doors_amount - 1  
-                        removable_doors_amount = self.set_remove_door_status(removable_doors_amount,
-                                                                    self.DoorStatus.removedUnchosenDoor.value)
+                        removable_doors_amount = self.set_remove_door_status(removable_doors_amount, self.DoorStatus.removedUnchosenDoor.value)
                         
                     else:
                         self.last_door_status_step_copy()
                         
-                        removable_doors_amount = self.set_remove_door_status(removable_doors_amount,
-                                                                        self.DoorStatus.removedUnchosenDoor.value)
+                        removable_doors_amount = self.set_remove_door_status(removable_doors_amount, self.DoorStatus.removedUnchosenDoor.value)
                     
                     all_removable_doors_amount = removable_doors_amount + 1
                     self.last_door_status_step_copy()
