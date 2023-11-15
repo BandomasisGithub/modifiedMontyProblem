@@ -52,15 +52,15 @@ class montyLogic:
 
             self.doors_state = np.zeros((self.doors_total_switches_amount, self.door_amount))
             self.doors_status_index = 0
-            user_choise_index = random.randint(1, self.door_amount) - 1
-            winning_door_index = random.randint(1, self.door_amount) - 1 
+            self.user_choise_index = random.randint(1, self.door_amount) - 1
+            self.winning_door_index = random.randint(1, self.door_amount) - 1 
             
-            if winning_door_index != user_choise_index:
+            if self.winning_door_index != self.user_choise_index:
             
-                self.doors_state[self.doors_status_index][winning_door_index] = self.DoorStatus.unchosenWinningDoor.value
-                self.doors_state[self.doors_status_index][user_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
+                self.doors_state[self.doors_status_index][self.winning_door_index] = self.DoorStatus.unchosenWinningDoor.value
+                self.doors_state[self.doors_status_index][self.user_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
             else:
-                self.doors_state[self.doors_status_index][winning_door_index] = self.DoorStatus.currentChosenWinningDoorByTheUser.value
+                self.doors_state[self.doors_status_index][self.winning_door_index] = self.DoorStatus.currentChosenWinningDoorByTheUser.value
             #END of initial setup (Winning door and user chosen door is set up and check if it's the same door)
             
             
@@ -124,11 +124,11 @@ class montyLogic:
 
     def set_remove_door_status(self, removable_doors_amount, removable_door_status,
                              doors_to_remove_indices, all_changable_doors_indices):
-
+        #TEORISKAI KARTOJAS SITOS DVI EILUTES IR IS PAVADININMU GAN SUNKU SUPRAST PRASME
+        #GAL REIKTU ISKELT I FUNCKIJA ATSKIRA IR JOJE PAAISKINT IDEJA KODEL TAIP DAROMA
         door_to_change_index_index = random.randint(0, removable_doors_amount-1)        
         door_to_change_index = doors_to_remove_indices[door_to_change_index_index]
 
-        #apacioj turetu but self doors ir kartojas kintamojo vardas 2 kartus
         doors_to_remove_indices = np.delete(doors_to_remove_indices, door_to_change_index_index)
         all_changable_doors_indices = np.delete(all_changable_doors_indices, door_to_change_index_index)
         self.doors_state[self.next_doors_status_index][door_to_change_index] = removable_door_status
@@ -143,7 +143,7 @@ class montyLogic:
         user_new_door_choise_index = all_changable_doors_indices[user_new_door_choise_indeces_index]
 
         #self.user_choise_index = all_changable_doors_indices[user_new_door_choise_indeces_index]
-        #self.winning_door_index
+        #self.self.winning_door_index
         
         #current_chosen_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenDoorByTheUser.value)
         #current_chosen_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.currentChosenWinningDoorByTheUser.value)[0]
@@ -151,9 +151,9 @@ class montyLogic:
 
         if self.winning_door_index == self.user_choise_index:
         #if current_chosen_winning_door_index.size:
-            
+
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
-            self.doors_state[self.next_doors_status_index][current_chosen_winning_door_index[0]] = self.DoorStatus.chosenWinningDoorByTheUser.value
+            self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenWinningDoorByTheUser.value
 
         #elif self.doors_state[self.doors_status_index][user_new_door_choise_index] == self.DoorStatus.unchosenWinningDoor.value:
         elif self.winning_door_index == user_new_door_choise_index: 
@@ -170,23 +170,19 @@ class montyLogic:
         self.user_choise_index = user_new_door_choise_index
         all_changable_doors_indices = np.delete(all_changable_doors_indices, user_new_door_choise_indeces_index)
         doors_to_remove_indices = np.delete(doors_to_remove_indices, user_new_door_choise_indeces_index)
-        self.doors_status_index += 1
+        #self.doors_status_index += 1
 
         return all_removable_doors_amount - 1
     
     def last_door_status_step_copy(self):
         # I Should fix this because there is definetly an error here
-        try:
 
-            subsequent_door_choise_step = self.doors_state[self.doors_status_index].copy()
-            self.next_doors_status_index = self.doors_status_index + 1
-            self.doors_state[self.next_doors_status_index] = subsequent_door_choise_step
-            self.doors_status_index += 1
-        except IndexError:
-            print(self.doors_state)
-            self.doors_status_index -= 1
-            self.next_doors_status_index = self.doors_status_index
-        
+
+        subsequent_door_choise_step = self.doors_state[self.doors_status_index].copy()
+        self.next_doors_status_index = self.doors_status_index + 1
+        self.doors_state[self.next_doors_status_index] = subsequent_door_choise_step
+        self.doors_status_index += 1
+
         return
 
 main()
