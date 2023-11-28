@@ -69,19 +69,21 @@ class montyLogic:
                 self.all_unchosen_doors_indices = np.concatenate((self.removable_doors_indices, self.selectable_not_removable_winning_door_index))
                 all_removable_doors_amount = self.all_unchosen_doors_indices.size
                 removable_doors_amount = all_removable_doors_amount - 1  
-
+                print(self.doors_state)
                 while all_removable_doors_amount:
-                    
+                    print(removable_doors_amount)
+                    self.last_door_status_step_copy()
                     if (removable_doors_amount == 0 and all_removable_doors_amount == 1):
-                        self.last_door_status_step_copy()
+                        #self.last_door_status_step_copy()
+                        print("What the duck")
                         self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == 
                                                                 self.DoorStatus.chosenDoorByTheUser.value)[0]
-                        removable_doors_amount = self.removable_doors_indices.size - 1  
+                        #removable_doors_amount = self.removable_doors_indices.size - 1  
                         removable_doors_amount = self.set_remove_door_status(removable_doors_amount,
                                                                               self.DoorStatus.removedUnchosenDoor.value)
                     else:
-                        self.last_door_status_step_copy()
-                        removable_doors_amount = all_removable_doors_amount - 1 
+                        #self.last_door_status_step_copy()
+                        #removable_doors_amount = self.all_unchosen_doors_indices.size - 1 
                         removable_doors_amount = self.set_remove_door_status(removable_doors_amount,
                                                                               self.DoorStatus.removedUnchosenDoor.value)
 
@@ -96,7 +98,8 @@ class montyLogic:
     # I should give status i am searching to remove 
 
     def set_remove_door_status(self, removable_doors_amount, removable_door_status):
-
+        print(removable_doors_amount)
+        print(self.doors_state)
         door_to_change_index_index = random.randint(0, removable_doors_amount-1)        
         door_to_change_index = self.removable_doors_indices[door_to_change_index_index]
         self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_change_index_index)
