@@ -24,6 +24,8 @@ class montyLogic:
         self.next_doors_status_index = 0
         self.user_choise_index = 0
         self.winning_door_index = 0
+        self.changeable_doors_amount = 0
+        self.removable_doors_amount = 0
         self.selectable_not_removable_winning_door_index = np.empty((0,0))
         self.removable_doors_indices = np.empty((0,0))
         self.all_unchosen_doors_indices = np.empty((0,0))
@@ -52,7 +54,7 @@ class montyLogic:
             self.doors_status_index = 0
             self.user_choise_index = random.randint(1, self.door_amount) - 1
             self.winning_door_index = random.randint(1, self.door_amount) - 1 
-            
+
             if self.winning_door_index != self.user_choise_index:
             
                 self.doors_state[self.doors_status_index][self.winning_door_index] = self.DoorStatus.unchosenWinningDoor.value
@@ -64,80 +66,109 @@ class montyLogic:
             self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenDoor.value)[0]
 
             if self.removable_doors_indices.any():
-
-                self.selectable_not_removable_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenWinningDoor.value)[0]
-                self.all_unchosen_doors_indices = np.concatenate((self.removable_doors_indices, self.selectable_not_removable_winning_door_index))
-                all_removable_doors_amount = self.all_unchosen_doors_indices.size
-                removable_doors_amount = all_removable_doors_amount - 1  
+                
+                if self.winning_door_index != self.user_choise_index:
+                    
+                    self.selectable_not_removable_winning_door_index = np.where(self.doors_state[self.doors_status_index] == self.DoorStatus.unchosenWinningDoor.value)[0]
+                    self.all_unchosen_doors_indices = np.concatenate((self.removable_doors_indices, self.selectable_not_removable_winning_door_index))
+                    self.changeable_doors_amount = self.all_unchosen_doors_indices.size
+                    self.removable_doors_amount = self.changeable_doors_amount - 1  
+                else:
+                    self.all_unchosen_doors_indices = self.removable_doors_indices
+                    self.changeable_doors_amount = self.all_unchosen_doors_indices.size - 1
+                    self.removable_doors_amount = self.changeable_doors_amount
+          
+                print("Initial amounts")
+                print(self.changeable_doors_amount)
+                print(self.removable_doors_amount)
                 print(self.doors_state)
-                while all_removable_doors_amount:
-                    print(removable_doors_amount)
+                print("")
+
+                while self.changeable_doors_amount:
+                    
                     self.last_door_status_step_copy()
-                    if (removable_doors_amount == 0 and all_removable_doors_amount == 1):
+                    if (self.removable_doors_amount == 0 and self.changeable_doors_amount == 1):
                         #self.last_door_status_step_copy()
                         print("What the duck")
                         self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == 
                                                                 self.DoorStatus.chosenDoorByTheUser.value)[0]
-                        #removable_doors_amount = self.removable_doors_indices.size - 1  
-                        removable_doors_amount = self.set_remove_door_status(removable_doors_amount,
-                                                                              self.DoorStatus.removedUnchosenDoor.value)
-                    else:
-                        #self.last_door_status_step_copy()
-                        #removable_doors_amount = self.all_unchosen_doors_indices.size - 1 
-                        removable_doors_amount = self.set_remove_door_status(removable_doors_amount,
-                                                                              self.DoorStatus.removedUnchosenDoor.value)
+                    
+                    self.set_remove_door_status(self.DoorStatus.removedUnchosenDoor.value)
+                    print("AFTER remove")
+                    print(self.changeable_doors_amount)
+                    print(self.removable_doors_amount)
+                    print(self.doors_state)
+                    print("")
 
-                    all_removable_doors_amount = removable_doors_amount + 1
+                    #self.changeable_doors_amount = self.removable_doors_amount + 1
                     self.last_door_status_step_copy()
-                    all_removable_doors_amount = self.set_chosen_door_status(all_removable_doors_amount)
+                    self.set_chosen_door_status()
+                    print("AFTER change")
+                    print(self.changeable_doors_amount)
+                    print(self.removable_doors_amount)
+                    print(self.doors_state)
+                    print("")
 
-        print(self.doors_state)
+        #print(self.doors_state)
         return 
 
 
     # I should give status i am searching to remove 
 
-    def set_remove_door_status(self, removable_doors_amount, removable_door_status):
-        print(removable_doors_amount)
-        print(self.doors_state)
-        door_to_change_index_index = random.randint(0, removable_doors_amount-1)        
+    def set_remove_door_status(self, removable_door_status):
+        door_to_change_index_index = random.randint(0, self.removable_doors_amount-1)        
         door_to_change_index = self.removable_doors_indices[door_to_change_index_index]
         self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_change_index_index)
         self.all_unchosen_doors_indices = np.delete(self.all_unchosen_doors_indices, door_to_change_index_index)
         self.doors_state[self.next_doors_status_index][door_to_change_index] = removable_door_status
+        self.changeable_doors_amount = self.changeable_doors_amount - 1
+        self.removable_doors_amount = self.removable_doors_amount - 1
         
-        return removable_doors_amount - 1
+        return 
         
 
 
-    def set_chosen_door_status(self, all_removable_doors_amount):
-
-        user_new_door_choise_indeces_index = random.randint(0, all_removable_doors_amount-1)
+    def set_chosen_door_status(self):
+        #print(self.changeable_doors_amount)
+        #print(self.doors_state)
+        user_new_door_choise_indeces_index = random.randint(0, self.changeable_doors_amount-1)
         user_new_door_choise_index = self.all_unchosen_doors_indices[user_new_door_choise_indeces_index]
 
         if self.winning_door_index == self.user_choise_index:
 
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
             self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenWinningDoorByTheUser.value
-            self.removable_doors_indices = np.delete(self.removable_doors_indices, user_new_door_choise_indeces_index)
+            #self.removable_doors_indices = np.delete(self.removable_doors_indices, user_new_door_choise_indeces_index)
+            
         elif self.winning_door_index == user_new_door_choise_index: 
 
-            self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.chosenWinningDoorByTheUser.value
+            self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
             self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenDoorByTheUser.value
+            self.all_unchosen_doors_indices = np.delete(self.removable_doors_indices, user_new_door_choise_indeces_index)
+            self.user_choise_index = user_new_door_choise_index
+            self.changeable_doors_amount = self.changeable_doors_amount - 1
+
+            return
         else:
             
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
             self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenDoorByTheUser.value
-            self.removable_doors_indices = np.delete(self.removable_doors_indices, user_new_door_choise_indeces_index)
+            #self.removable_doors_indices = np.delete(self.removable_doors_indices, user_new_door_choise_indeces_index)
 
-        self.user_choise_index = user_new_door_choise_index
+        
+        self.removable_doors_indices = np.delete(self.removable_doors_indices, user_new_door_choise_indeces_index)
         self.all_unchosen_doors_indices = np.delete(self.all_unchosen_doors_indices, user_new_door_choise_indeces_index)
+        self.user_choise_index = user_new_door_choise_index
+        self.changeable_doors_amount = self.changeable_doors_amount - 1
+        self.removable_doors_amount = self.removable_doors_amount - 1
 
-        return all_removable_doors_amount - 1
+        return 
     
+
     def last_door_status_step_copy(self):
 
         subsequent_door_choise_step = self.doors_state[self.doors_status_index].copy()
+        #in theory next door status index variable isnt necesary maybe leave it for clarity
         self.next_doors_status_index = self.doors_status_index + 1
         self.doors_state[self.next_doors_status_index] = subsequent_door_choise_step
         self.doors_status_index += 1
