@@ -7,7 +7,7 @@ import random
 
 def main():
 
-    door_amount_in_game = 6
+    door_amount_in_game = 10
     loop_amount = 1
     m = montyLogic(door_amount_in_game, loop_amount)
     m.monty_logic_loop()
@@ -37,12 +37,12 @@ class montyLogic:
     #    chosenWinningDoorByTheUser = 3
     #    chosenDoorByTheUser = 4
     #    currentChosenDoorByTheUser = 5
-    #    removedUnchosenDoor = 6
+    #    removedDoor = 6
     #    removedChosenDoor = 7
 
     DoorStatus = Enum('DoorStatus', [('unchosenDoor', 0), ('unchosenWinningDoor', 1), ('currentChosenWinningDoorByTheUser', 2), 
                     ('chosenWinningDoorByTheUser', 3), ('chosenDoorByTheUser', 4),('currentChosenDoorByTheUser', 5),
-                    ('removedUnchosenDoor', 6), ('removedChosenDoor', 7)])
+                    ('removedDoor', 6)])
 
     def monty_logic_loop(self):
 
@@ -91,29 +91,29 @@ class montyLogic:
 
                         self.changeable_doors_amount = self.changeable_doors_indices.size
                         self.removable_doors_amount = self.removable_doors_indices.size
-                        self.set_remove_door_status(self.DoorStatus.removedUnchosenDoor.value)
-                        self.set_remove_door_status
+                        self.set_remove_door_status()
+                        
 
                         break
 
                     elif(self.removable_doors_amount == 1 and self.changeable_doors_amount == 1):
-                        self.set_remove_door_status(self.DoorStatus.removedUnchosenDoor.value)
+                        self.set_remove_door_status()
 
                         break
 
-                    self.set_remove_door_status(self.DoorStatus.removedUnchosenDoor.value)
+                    self.set_remove_door_status()
                     self.last_door_status_step_copy()
                     self.set_chosen_door_status()
         print(self.doors_state)
         return 
 
 
-    def set_remove_door_status(self, removable_door_status):
-        door_to_change_index_index = random.randint(0, self.removable_doors_amount-1)        
-        door_to_change_index = self.removable_doors_indices[door_to_change_index_index]
-        self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_change_index_index)
-        self.changeable_doors_indices = np.delete(self.changeable_doors_indices, door_to_change_index_index)
-        self.doors_state[self.next_doors_status_index][door_to_change_index] = removable_door_status
+    def set_remove_door_status(self):
+        door_to_remove_index_index = random.randint(0, self.removable_doors_amount-1)        
+        door_to_remove_index = self.removable_doors_indices[door_to_remove_index_index]
+        self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_remove_index_index)
+        self.changeable_doors_indices = np.delete(self.changeable_doors_indices, door_to_remove_index_index)
+        self.doors_state[self.next_doors_status_index][door_to_remove_index] = self.DoorStatus.removedDoor.value
         self.changeable_doors_amount = self.changeable_doors_amount - 1
         self.removable_doors_amount = self.removable_doors_amount - 1
         
@@ -154,8 +154,42 @@ class montyLogic:
     
     def resetting_chosen_door_status(self):
         #sutvarkyt pirmini changeable doors indices
-        user_new_door_choise_indeces_index = random.randint(0, self.changeable_doors_amount-1)
-        user_new_door_choise_index = self.changeable_doors_indices[user_new_door_choise_indeces_index]
+        self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == 
+                                                                self.DoorStatus.chosenDoorByTheUser.value)[0]
+        door_to_remove_index_index = random.randint(0, self.removable_doors_amount-1)        
+        door_to_remove_index = self.removable_doors_indices[door_to_remove_index_index]
+        self.doors_state[self.next_doors_status_index][door_to_remove_index] = self.DoorStatus.chosenDoorByTheUser.value
+
+
+        self.changeable_doors_indices = np.where(self.doors_state[self.doors_status_index] != 
+                                                                self.DoorStatus.chosenDoorByTheUser.value)[0]
+        while True:
+
+            user_new_door_choise_indeces_index = random.randint(0, self.changeable_doors_amount-1)
+            user_new_door_choise_index = self.changeable_doors_indices[user_new_door_choise_indeces_index]
+
+            if(self.doors_state[self.next_doors_status_index][user_new_door_choise_index] != self.DoorStatus.currentChosenDoorByTheUser.value or 
+            self.doors_state[self.next_doors_status_index][user_new_door_choise_index] != self.currentChosenWinningDoorByTheUser.value):
+            
+                break
+
+        if self.winning_door_index == self.user_choise_index:
+
+            self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
+            self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenWinningDoorByTheUser.value
+            
+        elif self.winning_door_index == user_new_door_choise_index: 
+
+            self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenWinningDoorByTheUser.value
+            self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenDoorByTheUser.value
+            self.user_choise_index = user_new_door_choise_index
+
+        else:
+            
+            self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
+            self.doors_state[self.next_doors_status_index][self.user_choise_index] = self.DoorStatus.chosenDoorByTheUser.value
+
+        self.user_choise_index = user_new_door_choise_index
 
         return
 
