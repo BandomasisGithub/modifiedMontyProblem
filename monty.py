@@ -81,34 +81,28 @@ class montyLogic:
                     
                     self.last_door_status_step_copy()
                     if (self.removable_doors_amount == 0 and self.changeable_doors_amount == 1):
-                        print("YOINK")
-                        self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == 
-                                                                self.DoorStatus.chosenDoorByTheUser.value)[0]
-                        #Turetu but blogai nes parenka visus be 6 net ir jau pasirinkta 5 kurio neturetu rinktis
-                        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! istaiyst funkcijo
-                        self.changeable_doors_indices = np.where(self.doors_state[self.doors_status_index] != 
-                                                                self.DoorStatus.chosenDoorByTheUser.value)[0]
 
-                        self.changeable_doors_amount = self.changeable_doors_indices.size
-                        self.removable_doors_amount = self.removable_doors_indices.size
-                        self.set_remove_door_status()
-                        
+                        self.set_remove_unchosen_door_status()
+                        self.last_door_status_step_copy()
+                        self.set_chosen_for_unchosen_door_status()
 
                         break
 
                     elif(self.removable_doors_amount == 1 and self.changeable_doors_amount == 1):
-                        self.set_remove_door_status()
-
+                        self.set_remove_for_unchosen_door_status()
+                        self.last_door_status_step_copy()
+                        self.set_chosen_door_status()
+                       
                         break
 
-                    self.set_remove_door_status()
+                    self.set_remove_for_unchosen_door_status()
                     self.last_door_status_step_copy()
-                    self.set_chosen_door_status()
+                    self.set_chosen_for_unchosen_door_status()
         print(self.doors_state)
         return 
 
 
-    def set_remove_door_status(self):
+    def set_remove_for_unchosen_door_status(self):
         door_to_remove_index_index = random.randint(0, self.removable_doors_amount-1)        
         door_to_remove_index = self.removable_doors_indices[door_to_remove_index_index]
         self.removable_doors_indices = np.delete(self.removable_doors_indices, door_to_remove_index_index)
@@ -121,7 +115,7 @@ class montyLogic:
         
 
 
-    def set_chosen_door_status(self):
+    def set_chosen_for_unchosen_door_status(self):
 
         user_new_door_choise_indeces_index = random.randint(0, self.changeable_doors_amount-1)
         user_new_door_choise_index = self.changeable_doors_indices[user_new_door_choise_indeces_index]
@@ -152,27 +146,32 @@ class montyLogic:
 
         return 
     
-    def resetting_chosen_door_status(self):
-        #sutvarkyt pirmini changeable doors indices
+    def set_remove_unchosen_door_status(self):
+        
         self.removable_doors_indices = np.where(self.doors_state[self.doors_status_index] == 
                                                                 self.DoorStatus.chosenDoorByTheUser.value)[0]
-        door_to_remove_index_index = random.randint(0, self.removable_doors_amount-1)        
-        door_to_remove_index = self.removable_doors_indices[door_to_remove_index_index]
-        self.doors_state[self.next_doors_status_index][door_to_remove_index] = self.DoorStatus.chosenDoorByTheUser.value
+        door_to_remove_index = np.random.choice(self.removable_doors_indices)
+        self.doors_state[self.next_doors_status_index][door_to_remove_index] = self.DoorStatus.removedDoor.value
+        
+        return
 
-
+    def set_chosen_door_status(self):
+        print("w")
+        print(self.doors_state)
         self.changeable_doors_indices = np.where(self.doors_state[self.doors_status_index] != 
-                                                                self.DoorStatus.chosenDoorByTheUser.value)[0]
+                                                self.DoorStatus.removedDoor.value)[0]
+        
+
+        
         while True:
 
-            user_new_door_choise_indeces_index = random.randint(0, self.changeable_doors_amount-1)
-            user_new_door_choise_index = self.changeable_doors_indices[user_new_door_choise_indeces_index]
-
+            user_new_door_choise_index = np.random.choice(self.changeable_doors_indices)
+            print(user_new_door_choise_index )
             if(self.doors_state[self.next_doors_status_index][user_new_door_choise_index] != self.DoorStatus.currentChosenDoorByTheUser.value or 
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] != self.currentChosenWinningDoorByTheUser.value):
-            
-                break
 
+                break
+        #Ismeta klaida jei peasirenka index 5 kuris yra esamas dabar
         if self.winning_door_index == self.user_choise_index:
 
             self.doors_state[self.next_doors_status_index][user_new_door_choise_index] = self.DoorStatus.currentChosenDoorByTheUser.value
