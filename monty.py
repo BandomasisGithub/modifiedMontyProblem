@@ -31,6 +31,7 @@ class montyLogic:
         self.changeable_doors_indices = np.empty((0,0))
         self.doors_state = np.zeros((self.doors_total_switches_amount, self.door_amount))
         self.initial_doors_state = np.zeros((self.doors_total_switches_amount, self.door_amount))
+        self.doors_winning_percentege = np.zeros((self.doors_total_switches_amount, self.door_amount))
 
     #class DoorStatus(Enum):
     #    unchosenDoor = 0
@@ -228,10 +229,11 @@ class montyLogic:
         
         self.reseting_game_game_generation_indexes()
 
-        return
+        return  
 
 
     def reseting_game_game_generation_indexes(self):
+
         self.doors_status_index = 0
         self.next_doors_status_index = 0
         self.user_choise_index = 0
@@ -242,6 +244,14 @@ class montyLogic:
         self.removable_doors_indices = np.empty((0,0))
         self.changeable_doors_indices = np.empty((0,0))
         self.doors_state = np.zeros((self.doors_total_switches_amount, self.door_amount))
+
+        return
+
+    def door_winning_percentege(self):
+        self.doors_state
+        return
+    
+
 main()
 
 #def main():
