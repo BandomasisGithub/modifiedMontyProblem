@@ -249,6 +249,8 @@ class montyLogic:
 
     def door_winning_percentege(self):
         self.doors_state
+        #num_twos = np.count_nonzero(arr == 2)
+        #tensorflow
         return
     
 
